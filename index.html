@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse Solar Total · Mallorca 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --amber: #e8621a;
+    --amber-light: #ffb84d;
+    --dark: #07070f;
+    --dark2: #0f0d1c;
+    --dark3: #1a0a2e;
+    --text: #f5f0e8;
+    --muted: rgba(245,240,232,0.55);
+    --faint: rgba(245,240,232,0.25);
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── STARS CANVAS ── */
+  #stars-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  section { position: relative; z-index: 2; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .eclipse-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 40px;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .corona-ring {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 45%, rgba(255,160,40,0.12) 60%, transparent 75%);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.7; }
+  }
+
+  .eclipse-svg { width: 100%; height: 100%; }
+
+  .badge {
+    display: inline-block;
+    border: 0.5px solid rgba(255,184,77,0.4);
+    color: var(--amber-light);
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 8vw, 72px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber-light);
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 32px;
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .scarcity-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(220,60,40,0.12);
+    border: 0.5px solid rgba(220,80,60,0.35);
+    border-radius: 100px;
+    padding: 10px 22px;
+    font-size: 13px;
+    color: #ff9988;
+    margin-bottom: 40px;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .scarcity-bar i { font-size: 15px; }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--amber);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    padding: 16px 40px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    animation: fadeUp 1s ease 0.7s both;
+  }
+
+  .cta-btn:hover { background: #c9521a; transform: translateY(-1px); }
+
+  .cta-note {
+    display: block;
+    font-size: 12px;
+    color: var(--faint);
+    margin-top: 14px;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--faint);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeUp 1s ease 1.2s both;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--faint), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(255,184,77,0.3), transparent);
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 80px 0;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 50px);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+
+  .section-title em { font-style: italic; color: var(--amber-light); }
+
+  .section-body {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.85;
+    max-width: 560px;
+  }
+
+  /* ── WHY SECTION ── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .why-card {
+    background: rgba(255,255,255,0.03);
+    padding: 32px 28px;
+    transition: background 0.2s;
+  }
+
+  .why-card:hover { background: rgba(255,255,255,0.055); }
+
+  .why-num {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 300;
+    color: rgba(255,184,77,0.25);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .why-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .why-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── INCLUDES ── */
+  .includes-list {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .include-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 0.5px solid rgba(255,255,255,0.07);
+    transition: padding-left 0.2s;
+  }
+
+  .include-item:hover { padding-left: 8px; }
+  .include-item:last-child { border-bottom: none; }
+
+  .include-icon {
+    width: 40px;
+    height: 40px;
+    border: 0.5px solid rgba(255,184,77,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--amber-light);
+    font-size: 18px;
+  }
+
+  .include-text h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .include-text p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── DETAILS ROW ── */
+  .details-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .detail-tile {
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 4px;
+    padding: 24px;
+  }
+
+  .detail-tile i {
+    font-size: 20px;
+    color: var(--amber);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .detail-tile .label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .detail-tile .value {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  /* ── PRICE ── */
+  .price-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .price-card {
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 32px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .price-card:hover { border-color: rgba(255,184,77,0.3); }
+
+  .price-card.featured {
+    border-color: var(--amber);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card.featured::before {
+    content: 'Recomendado';
+    position: absolute;
+    top: 14px; right: -28px;
+    background: var(--amber);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 40px;
+    transform: rotate(45deg);
+  }
+
+  .price-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 54px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .price-currency {
+    font-family: var(--font-display);
+    font-size: 28px;
+    vertical-align: super;
+  }
+
+  .price-per {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .price-saving {
+    font-size: 12px;
+    color: var(--amber-light);
+    margin-top: 12px;
+  }
+
+  /* ── VIDEO SECTION (placeholder) ── */
+  .video-section {
+    padding: 80px 0;
+  }
+
+  .video-placeholder {
+    margin-top: 40px;
+    border: 1px dashed rgba(255,184,77,0.25);
+    border-radius: 4px;
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    background: rgba(255,184,77,0.03);
+  }
+
+  .video-placeholder i { font-size: 40px; color: rgba(255,184,77,0.3); }
+  .video-placeholder p { font-size: 14px; }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta {
+    padding: 100px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    border-top: 0.5px solid rgba(255,255,255,0.06);
+  }
+
+  .footer-cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 62px);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .footer-cta-title em { font-style: italic; color: var(--amber-light); }
+
+  .footer-cta-body {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .spots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 36px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .dots { display: flex; gap: 6px; }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .dot.taken { background: var(--amber); }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--faint);
+    margin-top: 16px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .why-grid, .price-grid, .details-row { grid-template-columns: 1fr; }
+    .hero-title { font-size: 40px; }
+    .footer-cta-title { font-size: 32px; }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">12 · Agosto · 2026 &nbsp;·&nbsp; Mallorca</div>
+
+  <div class="eclipse-wrap">
+    <div class="corona-ring"></div>
+    <svg class="eclipse-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffb84d" stop-opacity="0"/>
+          <stop offset="58%" stop-color="#ffb84d" stop-opacity="0"/>
+          <stop offset="68%" stop-color="#ff8c30" stop-opacity="0.5"/>
+          <stop offset="80%" stop-color="#ff4010" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#ff4010" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="70" cy="70" r="66" fill="url(#cg)"/>
+      <circle cx="70" cy="70" r="46" fill="#ffb84d" opacity="0.95"/>
+      <circle cx="74" cy="70" r="44" fill="#07070f"/>
+      <circle cx="70" cy="70" r="44" fill="#07070f"/>
+      <!-- Corona rays -->
+      <line x1="70" y1="16" x2="70" y2="6" stroke="#ffb84d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="70" y1="134" x2="70" y2="124" stroke="#ffb84d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="16" y1="70" x2="6" y2="70" stroke="#ffb84d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="134" y1="70" x2="124" y2="70" stroke="#ffb84d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="29" y1="29" x2="22" y2="22" stroke="#ffb84d" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <line x1="111" y1="29" x2="118" y2="22" stroke="#ffb84d" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <line x1="29" y1="111" x2="22" y2="118" stroke="#ffb84d" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <line x1="111" y1="111" x2="118" y2="118" stroke="#ffb84d" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <line x1="70" y1="16" x2="70" y2="10" stroke="#ffb84d" stroke-width="0.5" stroke-linecap="round" opacity="0.3" transform="rotate(22.5 70 70)"/>
+      <line x1="70" y1="16" x2="70" y2="10" stroke="#ffb84d" stroke-width="0.5" stroke-linecap="round" opacity="0.3" transform="rotate(67.5 70 70)"/>
+      <line x1="70" y1="16" x2="70" y2="10" stroke="#ffb84d" stroke-width="0.5" stroke-linecap="round" opacity="0.3" transform="rotate(112.5 70 70)"/>
+      <line x1="70" y1="16" x2="70" y2="10" stroke="#ffb84d" stroke-width="0.5" stroke-linecap="round" opacity="0.3" transform="rotate(157.5 70 70)"/>
+    </svg>
+  </div>
+
+  <div class="badge">Eclipse Solar Total · Atardecer sobre el Mediterráneo</div>
+
+  <h1 class="hero-title">El eclipse<br>del <em>siglo</em></h1>
+  <p class="hero-subtitle">Visto desde el mar · Mallorca, agosto 2026</p>
+
+  <div class="scarcity-bar">
+    <i class="ti ti-alert-triangle"></i>
+    El próximo no llega hasta dentro de 150 años
+  </div>
+
+  <a href="#reservar" class="cta-btn">Reservar mi plaza</a>
+  <span class="cta-note">Solo 5 plazas disponibles · Salida desde Santa Ponsa</span>
+
+  <div class="scroll-hint">Descubrir</div>
+</section>
+
+<!-- WHY -->
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Por qué esto es histórico</span>
+      <h2 class="section-title">Un fenómeno que no<br>verás <em>dos veces</em> en la vida</h2>
+      <p class="section-body">El 12 de agosto de 2026, la luna tapará completamente el sol justo cuando este esté tocando el horizonte del Mediterráneo. El cielo oscurecerá de golpe, las estrellas aparecerán de día, y la corona solar brillará sobre el agua en uno de los espectáculos más raros de la naturaleza. Mallorca es uno de los mejores puntos del mundo para verlo.</p>
+    </div>
+
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <div class="why-num">01</div>
+        <div class="why-title">Eclipse total al atardecer</div>
+        <p class="why-body">La totalidad ocurre justo antes de la puesta de sol. El resultado visual es inigualable: sol negro, corona dorada, cielo carmesí.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">02</div>
+        <div class="why-title">Visible desde el mar</div>
+        <p class="why-body">Desde el agua, sin obstáculos, con el Mediterráneo como horizonte. Una perspectiva que nadie en tierra podrá tener.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">03</div>
+        <div class="why-title">Mallorca, en el centro</div>
+        <p class="why-body">La zona oeste de la isla —San Telmo, Santa Ponsa— está dentro del corredor de la totalidad. Uno de los mejores puntos del mundo.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">04</div>
+        <div class="why-title">150 años hasta el próximo</div>
+        <p class="why-body">No habrá otra oportunidad igual en esta generación. Ni en la siguiente. Este es el momento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INCLUDES -->
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">La experiencia</span>
+      <h2 class="section-title">Todo incluido para que<br>solo pienses en <em>mirar al cielo</em></h2>
+      <p class="section-body">Salimos desde Santa Ponsa en un barco privado con capitán, navegamos hasta San Telmo y vivimos la totalidad desde el mar. Tres horas que no olvidarás.</p>
+    </div>
+
+    <div class="includes-list reveal">
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-eye"></i></div>
+        <div class="include-text">
+          <h3>Gafas especiales de eclipse</h3>
+          <p>Protección homologada para observar el sol directamente durante las fases parciales. Incluidas para cada persona.</p>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-drone"></i></div>
+        <div class="include-text">
+          <h3>Grabación con dron del momento exacto</h3>
+          <p>El instante de la totalidad capturado desde el aire. Tu recuerdo eterno del evento del siglo.</p>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-fish"></i></div>
+        <div class="include-text">
+          <h3>Snorkel en el Mediterráneo</h3>
+          <p>Máscaras incluidas para explorar las aguas de San Telmo antes o después del eclipse.</p>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-tool-kitchen-2"></i></div>
+        <div class="include-text">
+          <h3>Tapas y bebidas a bordo</h3>
+          <p>Producto local mallorquín mientras navegas. Incluido en el precio, sin sorpresas.</p>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-hat"></i></div>
+        <div class="include-text">
+          <h3>Gorra oficial del eclipse</h3>
+          <p>El recuerdo que te acompañará los próximos 150 años. Edición limitada.</p>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon"><i class="ti ti-anchor"></i></div>
+        <div class="include-text">
+          <h3>Barco privado con capitán</h3>
+          <p>Experiencia completamente exclusiva. Sin turistas, sin aglomeraciones. Solo tu grupo y el cielo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DETAILS -->
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Logística</span>
+      <h2 class="section-title">Todo lo que<br>necesitas <em>saber</em></h2>
+    </div>
+
+    <div class="details-row reveal">
+      <div class="detail-tile">
+        <i class="ti ti-calendar"></i>
+        <div class="label">Fecha</div>
+        <div class="value">12 de agosto, 2026</div>
+      </div>
+      <div class="detail-tile">
+        <i class="ti ti-map-pin"></i>
+        <div class="label">Salida</div>
+        <div class="value">Santa Ponsa → San Telmo</div>
+      </div>
+      <div class="detail-tile">
+        <i class="ti ti-clock"></i>
+        <div class="label">Duración</div>
+        <div class="value">3 horas</div>
+      </div>
+      <div class="detail-tile">
+        <i class="ti ti-users"></i>
+        <div class="label">Grupo máximo</div>
+        <div class="value">5 personas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO PLACEHOLDER -->
+<section class="video-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">El barco</span>
+      <h2 class="section-title">Tu hogar<br>durante <em>el eclipse</em></h2>
+      <p class="section-body" style="margin-bottom: 0;">Navega en un barco privado, con toda la comodidad y exclusividad que merece el momento.</p>
+    </div>
+    <div class="video-placeholder reveal">
+      <i class="ti ti-player-play"></i>
+      <p>Vídeo del barco próximamente</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICE -->
+<section class="section" id="reservar">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Precio</span>
+      <h2 class="section-title">Reserva<br>tu <em>plaza</em></h2>
+      <p class="section-body">Todo incluido. Sin costes ocultos. La experiencia completa desde que subes al barco hasta que bajas.</p>
+    </div>
+
+    <div class="price-grid reveal">
+      <div class="price-card">
+        <div class="price-label">Por persona</div>
+        <div class="price-amount"><span class="price-currency">€</span>900</div>
+        <div class="price-per">todo incluido</div>
+      </div>
+      <div class="price-card featured">
+        <div class="price-label">Barco completo</div>
+        <div class="price-amount"><span class="price-currency">€</span>4.000</div>
+        <div class="price-per">hasta 5 personas</div>
+        <div class="price-saving">Ahorra 500€ reservando el barco entero</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <h2 class="footer-cta-title">Solo quedan<br><em>5 plazas.</em></h2>
+  <p class="footer-cta-body">Después de este eclipse, nadie en Mallorca volverá a ver algo igual en su vida. Ni sus hijos. Ni sus nietos. La siguiente oportunidad llega en 150 años.</p>
+
+  <div class="spots">
+    <div class="dots">
+      <div class="dot taken"></div>
+      <div class="dot taken"></div>
+      <div class="dot taken"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    3 de 5 plazas reservadas
+  </div>
+
+  <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20quiero%20información%20sobre%20el%20eclipse%20de%20Mallorca%202026" 
+     class="cta-btn" target="_blank">Reservar por WhatsApp →</a>
+  <p class="footer-note">Salida desde Santa Ponsa · 3 horas · Todo incluido · Agosto 2026</p>
+</section>
+
+<script>
+  // Stars
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const stars = Array.from({length: 120}, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    r: Math.random() * 1.2 + 0.2,
+    a: Math.random() * 0.6 + 0.1,
+    speed: Math.random() * 0.002 + 0.001,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  function drawStars(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      const alpha = s.a * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 240, 210, ${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  requestAnimationFrame(drawStars);
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
